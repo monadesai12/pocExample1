@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="d6776016-f714-4cec-b7a2-694678eb531b" >
+		<db:generic-connection url="jdbc:postgresql://localhost:5432/postgres" driverClassName="org.postgresql.Driver" user="postgres" password="12345" />
+	</db:config>
+	<flow name="getstudent" doc:id="6626769d-7d90-49c4-9d45-8b4e386e15c6" >
+		<db:select doc:name="Select" doc:id="f9203ae9-fe87-496b-8c25-32cc9238ffe4" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * from pocexample]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="f9681ed8-ee29-4f85-93ef-c1fad3d62180" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="getstudentbyid" doc:id="a9115e0b-aaa2-4c46-98f7-616a9d87e8e4" >
+		<db:select doc:name="Select" doc:id="3c24cad9-3412-4271-91be-8020122b8f56" config-ref="Database_Config">
+			<db:sql ><![CDATA[select * from employee where eid =:id
+]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+    id: attributes.uriParams.eid
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="f793e8bd-14ec-425c-b1fc-03b8e086e963" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="insertdata" doc:id="2a904857-2589-4fc4-a63c-4dc3f83ca2fc" >
+		<db:insert doc:name="Insertdata" doc:id="bd78da29-7ef9-42d0-86a3-02c03df0b4ad" config-ref="Database_Config">
+			<db:sql ><![CDATA[insert into pocexample values(:id,:name, :standard,:division,:address,:Favsubject)
+
+]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{ id: payload.id, 
+	name:payload.name,
+	standard:payload.standard,
+	division:payload.division,
+	address:payload.address,
+	Favsubject:payload.Favsubject
+	}]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform doc:name="Transform Message" doc:id="c9461b05-88aa-4be6-9e0c-bd38c1a539a6" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message":"Student created"
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="deletebyid" doc:id="21fffe9c-b50d-4c8d-aa17-080a3d40fe6f" >
+		<db:delete doc:name="Delete" doc:id="b76f3af2-cc61-424d-9130-72b2b8ab6371" config-ref="Database_Config">
+			<db:sql ><![CDATA[delete from pocexample where id=:id
+]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+    id: attributes.uriParams.eid
+}]]]></db:input-parameters>
+		</db:delete>
+		<ee:transform doc:name="Transform Message" doc:id="6bbb837a-72a1-4add-b49a-c8a8d81e2bc8" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="updatedata" doc:id="c44f996f-99b5-4a15-b46e-aa6f73b7d4ab" >
+		<db:update doc:name="Update" doc:id="ec4fcc0f-b5c7-46ad-a6ff-82160841eb93" config-ref="Database_Config">
+			<db:sql ><![CDATA[update pocexample SET name =:name, standard =:standard,
+division =:division,address =:address,Favsubject =:Favsubject where id =:id;]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{ id: payload.id, 
+	name:payload.name,
+	standard:payload.standard,
+	division:payload.division,
+	address:payload.address,
+	Favsubject:payload.Favsubject
+	}]]]></db:input-parameters>
+		</db:update>
+		<ee:transform doc:name="Transform Message" doc:id="5fda9f9c-2c0d-4275-977f-a99570429a31" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+{
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

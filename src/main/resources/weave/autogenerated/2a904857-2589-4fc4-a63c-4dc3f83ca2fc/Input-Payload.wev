@@ -1,0 +1,12 @@
+%dw 2.0
+
+type auto_2a904857_2589_4fc4_a63c_4dc3f83ca2fc_Input_Payload = {
+  standard: Number, 
+  division: String, 
+  address: String, 
+  name: String, 
+  Favsubject: String, 
+  ID?: Number, 
+  _?: Any
+}
+
