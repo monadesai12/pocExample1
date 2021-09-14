@@ -33,7 +33,7 @@
 				<cloudHubDeployment>
 				<uri>https://anypoint.mulesoft.com </uri>
 				<muleVersion>4.3.0</muleVersion>
-				<username>monikadesai</username>
+				<username>monako</username>
 				<password>Monika@12345</password>
 				<applicationName>Simplepoc-monika</applicationName>
 				<environment>Sandbox</environment>
